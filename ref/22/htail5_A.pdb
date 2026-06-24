@@ -1,0 +1,52 @@
+MODEL        0
+ATOM    367 pK    pK A 367    1179.990  35.300   3.290  1.00  0.00          Cu  
+ATOM    368 pS    pS A 368    1183.800  35.780   3.190  1.00  0.00          Cu  
+ATOM    369 pA    pA A 369    1184.000  37.390   6.470  1.00  0.00          Cu  
+ATOM    370 pP    pP A 370    1186.240  36.500   9.170  1.00  0.00          Cu  
+ATOM    371 pA    pA A 371    1185.590  38.470  12.090  1.00  0.00          Cu  
+ATOM    372 pP    pP A 372    1186.570  36.900  15.730  1.00  0.00          Cu  
+ATOM    373 pK    pK A 373    1190.690  37.260  14.680  1.00  0.00          Cu  
+ATOM    374 pK    pK A 374    1194.680  36.380  15.130  1.00  0.00          Cu  
+ATOM    375 pG    pG A 375    1197.200  33.260  16.750  1.00  0.00          Cu  
+ATOM    376 pS    pS A 376    1198.600  30.040  16.400  1.00  0.00          Cu  
+ATOM    377 pK    pK A 377    1195.570  28.220  17.830  1.00  0.00          Cu  
+ATOM    378 pK    pK A 378    1192.850  26.450  20.010  1.00  0.00          Cu  
+ATOM    379 pA    pA A 379    1191.670  24.080  17.780  1.00  0.00          Cu  
+ATOM    380 pV    pV A 380    1193.760  23.150  14.760  1.00  0.00          Cu  
+ATOM    381 pT    pT A 381    1193.750  24.150  11.260  1.00  0.00          Cu  
+ATOM    382 pK    pK A 382    1192.810  20.980   9.410  1.00  0.00          Cu  
+ATOM    383 pT    pT A 383    1194.100  17.540   9.800  1.00  0.00          Cu  
+ATOM    384 pQ    pQ A 384    1194.240  16.040  13.500  1.00  0.00          Cu  
+ATOM    385 pK    pK A 385    1192.280  14.320  16.230  1.00  0.00          Cu  
+ATOM    386 pK    pK A 386    1193.080  10.650  17.200  1.00  0.00          Cu  
+ATOM    387 pD    pD A 387    1190.330   9.790  20.060  1.00  0.00          Cu  
+ATOM    388 pG    pG A 388    1189.160   7.580  22.870  1.00  0.00          Cu  
+ATOM    389 pK    pK A 389    1190.650   9.780  25.310  1.00  0.00          Cu  
+ATOM    390 pK    pK A 390    1193.520  12.430  24.540  1.00  0.00          Cu  
+TER     391       pK A 390
+ENDMDL
+CONECT    1    2
+CONECT    2    1    3
+CONECT    3    2    4
+CONECT    4    3    5
+CONECT    5    4    6
+CONECT    6    5    7
+CONECT    7    6    8
+CONECT    8    7    9
+CONECT    9    8   10
+CONECT   10    9   11
+CONECT   11   10   12
+CONECT   12   11   13
+CONECT   13   12   14
+CONECT   14   13   15
+CONECT   15   14   16
+CONECT   16   15   17
+CONECT   17   16   18
+CONECT   18   17   19
+CONECT   19   18   20
+CONECT   20   19   21
+CONECT   21   20   22
+CONECT   22   21   23
+CONECT   23   22   24
+CONECT   24   23
+END
