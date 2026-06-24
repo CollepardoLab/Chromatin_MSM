@@ -1,0 +1,32 @@
+MODEL        0
+ATOM   1813 pV    pV A 838      51.880 -33.780 184.350  1.00  0.00          Cu  
+ATOM   1814 pL    pL A 839      55.310 -32.940 183.670  1.00  0.00          Cu  
+ATOM   1815 pL    pL A 840      57.880 -34.610 181.230  1.00  0.00          Cu  
+ATOM   1816 pP    pP A 841      60.300 -32.900 178.690  1.00  0.00          Cu  
+ATOM   1817 pK    pK A 842      61.410 -29.120 179.900  1.00  0.00          Cu  
+ATOM   1818 pK    pK A 843      62.500 -25.730 178.220  1.00  0.00          Cu  
+ATOM   1819 pT    pT A 844      60.490 -26.240 175.080  1.00  0.00          Cu  
+ATOM   1820 pE    pE A 845      62.850 -28.230 173.080  1.00  0.00          Cu  
+ATOM   1821 pS    pS A 846      60.840 -28.080 169.600  1.00  0.00          Cu  
+ATOM   1822 pS    pS A 847      59.010 -31.550 169.040  1.00  0.00          Cu  
+ATOM   1823 pK    pK A 848      61.850 -33.140 166.880  1.00  0.00          Cu  
+ATOM   1824 pS    pS A 849      61.010 -31.650 163.210  1.00  0.00          Cu  
+ATOM   1825 pK    pK A 850      62.150 -29.370 160.310  1.00  0.00          Cu  
+ATOM   1826 pS    pS A 851      64.190 -27.410 157.560  1.00  0.00          Cu  
+TER    1827       pS A 851
+ENDMDL
+CONECT    1    2
+CONECT    2    1    3
+CONECT    3    2    4
+CONECT    4    3    5
+CONECT    5    4    6
+CONECT    6    5    7
+CONECT    7    6    8
+CONECT    8    7    9
+CONECT    9    8   10
+CONECT   10    9   11
+CONECT   11   10   12
+CONECT   12   11   13
+CONECT   13   12   14
+CONECT   14   13
+END
