@@ -11,13 +11,15 @@ The MSM construction, validation and analysis can be found in `MSM_analysis/MSM_
 ## Install
 
 ```bash
+git clone https://github.com/CollepardoLab/Chromatin_MSM.git
+cd Chromatin_MSM
 pip install -e .
 ```
 
 ### Required packages
 
 - `OpenCGChromatin` ([GitHub, not PyPI/conda](https://github.com/CollepardoLab/OpenCGChromatin))
-- `FMRC` ([GitHub, not PyPI/conda](https://github.com/Mingyuan00/Flow_Matching_for_RC))
+- `FMRC` ([original algorithm](https://github.com/Mingyuan00/Flow_Matching_for_RC))
 - `python` (3.9 at least)
 - `openmm` (8.1.2)
 - `plumed` (2.9.2 / `py-plumed` 2.9.2)
