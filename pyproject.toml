@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Chromatin_MSM"
+version = "0.1.0"
+description = "Adaptive MSM sampling and PLUMED feature generation for tetranucleosome CG simulations"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "numpy",
+    "pandas",
+    "mdtraj",
+    "deeptime",
+    "openmm",
+    "plumed",
+]
+
+[project.optional-dependencies]
+# OpenCGChromatin is not published on PyPI; install separately from
+# https://github.com/CollepardoLab/OpenCGChromatin and ensure it is
+# importable before running the adaptive-sampling CLI.
+
+[project.scripts]
+nucleosome-adaptive-sampling = "Chromatin_MSM.adaptive:main"
+nucleosome-feature-writer = "Chromatin_MSM.feature_writer:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
