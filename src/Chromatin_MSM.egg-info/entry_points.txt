@@ -1,0 +1,3 @@
+[console_scripts]
+nucleosome-adaptive-sampling = Chromatin_MSM.adaptive:main
+nucleosome-feature-writer = Chromatin_MSM.feature_writer:main

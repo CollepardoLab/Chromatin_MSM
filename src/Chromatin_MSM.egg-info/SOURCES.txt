@@ -1,0 +1,11 @@
+README.md
+pyproject.toml
+src/Chromatin_MSM/__init__.py
+src/Chromatin_MSM/adaptive.py
+src/Chromatin_MSM/feature_writer.py
+src/Chromatin_MSM.egg-info/PKG-INFO
+src/Chromatin_MSM.egg-info/SOURCES.txt
+src/Chromatin_MSM.egg-info/dependency_links.txt
+src/Chromatin_MSM.egg-info/entry_points.txt
+src/Chromatin_MSM.egg-info/requires.txt
+src/Chromatin_MSM.egg-info/top_level.txt
