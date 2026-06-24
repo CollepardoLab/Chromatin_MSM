@@ -1,0 +1,42 @@
+MODEL        0
+ATOM   3164 pG    pG A 239     -23.400  39.340  68.240  1.00  0.00          Cu  
+ATOM   3165 pR    pR A 240     -21.600  40.800  65.420  1.00  0.00          Cu  
+ATOM   3166 pG    pG A 241     -19.770  44.020  64.140  1.00  0.00          Cu  
+ATOM   3167 pK    pK A 242     -19.100  47.700  65.350  1.00  0.00          Cu  
+ATOM   3168 pQ    pQ A 243     -18.160  49.440  68.810  1.00  0.00          Cu  
+ATOM   3169 pG    pG A 244     -16.110  52.570  68.540  1.00  0.00          Cu  
+ATOM   3170 pG    pG A 245     -14.970  53.510  71.920  1.00  0.00          Cu  
+ATOM   3171 pK    pK A 246     -13.570  50.870  74.130  1.00  0.00          Cu  
+ATOM   3172 pT    pT A 247     -11.180  53.300  75.700  1.00  0.00          Cu  
+ATOM   3173 pR    pR A 248      -7.280  53.000  74.930  1.00  0.00          Cu  
+ATOM   3174 pA    pA A 249      -5.020  51.330  72.650  1.00  0.00          Cu  
+ATOM   3175 pK    pK A 250      -1.520  51.940  72.940  1.00  0.00          Cu  
+ATOM   3176 pA    pA A 251      -0.810  52.620  76.540  1.00  0.00          Cu  
+ATOM   3177 pK    pK A 252       1.300  51.400  79.210  1.00  0.00          Cu  
+ATOM   3178 pT    pT A 253       3.140  49.000  81.510  1.00  0.00          Cu  
+ATOM   3179 pR    pR A 254       6.840  48.970  80.380  1.00  0.00          Cu  
+ATOM   3180 pS    pS A 255       7.760  52.440  81.720  1.00  0.00          Cu  
+ATOM   3181 pS    pS A 256       7.170  56.260  81.290  1.00  0.00          Cu  
+ATOM   3182 pR    pR A 257      10.980  56.500  80.440  1.00  0.00          Cu  
+TER    3183       pR A 257
+ENDMDL
+CONECT    1    2
+CONECT    2    1    3
+CONECT    3    2    4
+CONECT    4    3    5
+CONECT    5    4    6
+CONECT    6    5    7
+CONECT    7    6    8
+CONECT    8    7    9
+CONECT    9    8   10
+CONECT   10    9   11
+CONECT   11   10   12
+CONECT   12   11   13
+CONECT   13   12   14
+CONECT   14   13   15
+CONECT   15   14   16
+CONECT   16   15   17
+CONECT   17   16   18
+CONECT   18   17   19
+CONECT   19   18
+END
