@@ -1,0 +1,82 @@
+MODEL        0
+ATOM      2 pR    pR A   2     -24.440 237.180 339.190  1.00  0.00          Cu  
+ATOM      3 pT    pT A   3     -27.160 239.620 338.100  1.00  0.00          Cu  
+ATOM      4 pK    pK A   4     -28.570 242.620 340.370  1.00  0.00          Cu  
+ATOM      5 pQ    pQ A   5     -25.390 243.040 342.500  1.00  0.00          Cu  
+ATOM      6 pT    pT A   6     -25.010 246.440 344.390  1.00  0.00          Cu  
+ATOM      7 pA    pA A   7     -22.010 248.370 345.940  1.00  0.00          Cu  
+ATOM      8 pR    pR A   8     -19.530 248.600 349.060  1.00  0.00          Cu  
+ATOM      9 pK    pK A   9     -17.670 246.390 351.010  1.00  0.00          Cu  
+ATOM     10 pS    pS A  10     -18.700 247.500 354.600  1.00  0.00          Cu  
+ATOM     11 pT    pT A  11     -19.920 250.890 354.090  1.00  0.00          Cu  
+ATOM     12 pG    pG A  12     -20.940 252.290 357.390  1.00  0.00          Cu  
+ATOM     13 pG    pG A  13     -21.660 252.670 360.920  1.00  0.00          Cu  
+ATOM     14 pK    pK A  14     -22.870 252.660 364.880  1.00  0.00          Cu  
+ATOM     15 pA    pA A  15     -26.500 251.680 366.220  1.00  0.00          Cu  
+ATOM     16 pP    pP A  16     -28.230 251.230 362.940  1.00  0.00          Cu  
+ATOM     17 pR    pR A  17     -32.260 252.060 363.370  1.00  0.00          Cu  
+ATOM     18 pK    pK A  18     -32.540 248.960 365.500  1.00  0.00          Cu  
+ATOM     19 pQ    pQ A  19     -32.910 250.410 369.120  1.00  0.00          Cu  
+ATOM     20 pL    pL A  20     -32.260 248.190 372.400  1.00  0.00          Cu  
+ATOM     21 pA    pA A  21     -32.380 245.100 374.270  1.00  0.00          Cu  
+ATOM     22 pT    pT A  22     -29.450 242.520 374.190  1.00  0.00          Cu  
+ATOM     23 pK    pK A  23     -27.950 241.730 371.010  1.00  0.00          Cu  
+ATOM     24 pA    pA A  24     -27.850 239.250 368.130  1.00  0.00          Cu  
+ATOM     25 pA    pA A  25     -30.540 240.070 365.870  1.00  0.00          Cu  
+ATOM     26 pR    pR A  26     -32.640 241.830 363.420  1.00  0.00          Cu  
+ATOM     27 pK    pK A  27     -31.750 240.970 359.590  1.00  0.00          Cu  
+ATOM     28 pS    pS A  28     -32.870 237.770 361.430  1.00  0.00          Cu  
+ATOM     29 pA    pA A  29     -36.170 236.700 363.630  1.00  0.00          Cu  
+ATOM     30 pP    pP A  30     -37.870 237.110 367.400  1.00  0.00          Cu  
+ATOM     31 pA    pA A  31     -34.880 238.940 369.240  1.00  0.00          Cu  
+ATOM     32 pT    pT A  32     -33.260 242.340 369.520  1.00  0.00          Cu  
+ATOM     33 pG    pG A  33     -34.770 245.340 366.940  1.00  0.00          Cu  
+ATOM     34 pG    pG A  34     -38.670 244.710 367.070  1.00  0.00          Cu  
+ATOM     35 pV    pV A  35     -38.260 246.740 364.220  1.00  0.00          Cu  
+ATOM     36 pK    pK A  36     -40.930 249.440 364.750  1.00  0.00          Cu  
+ATOM     37 pK    pK A  37     -43.050 252.160 365.790  1.00  0.00          Cu  
+ATOM     38 pP    pP A  38     -46.900 251.060 365.310  1.00  0.00          Cu  
+ATOM     39 pH    pH A  39     -49.980 251.240 367.090  1.00  0.00          Cu  
+ATOM     40 pR    pR A  40     -51.340 249.790 370.420  1.00  0.00          Cu  
+TER      41       pR A  40
+ENDMDL
+CONECT    1    2
+CONECT    2    1    3
+CONECT    3    2    4
+CONECT    4    3    5
+CONECT    5    4    6
+CONECT    6    5    7
+CONECT    7    6    8
+CONECT    8    7    9
+CONECT    9    8   10
+CONECT   10    9   11
+CONECT   11   10   12
+CONECT   12   11   13
+CONECT   13   12   14
+CONECT   14   13   15
+CONECT   15   14   16
+CONECT   16   15   17
+CONECT   17   16   18
+CONECT   18   17   19
+CONECT   19   18   20
+CONECT   20   19   21
+CONECT   21   20   22
+CONECT   22   21   23
+CONECT   23   22   24
+CONECT   24   23   25
+CONECT   25   24   26
+CONECT   26   25   27
+CONECT   27   26   28
+CONECT   28   27   29
+CONECT   29   28   30
+CONECT   30   29   31
+CONECT   31   30   32
+CONECT   32   31   33
+CONECT   33   32   34
+CONECT   34   33   35
+CONECT   35   34   36
+CONECT   36   35   37
+CONECT   37   36   38
+CONECT   38   37   39
+CONECT   39   38
+END

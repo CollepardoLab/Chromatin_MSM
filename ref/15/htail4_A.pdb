@@ -1,0 +1,32 @@
+MODEL        0
+ATOM    352 pL    pL A 352     -86.810 237.430 409.610  1.00  0.00          Cu  
+ATOM    353 pL    pL A 353     -89.220 240.200 410.310  1.00  0.00          Cu  
+ATOM    354 pP    pP A 354     -88.820 244.150 410.070  1.00  0.00          Cu  
+ATOM    355 pK    pK A 355     -85.010 244.960 409.980  1.00  0.00          Cu  
+ATOM    356 pK    pK A 356     -81.890 247.110 409.410  1.00  0.00          Cu  
+ATOM    357 pT    pT A 357     -81.380 250.980 409.720  1.00  0.00          Cu  
+ATOM    358 pE    pE A 358     -79.680 253.900 408.420  1.00  0.00          Cu  
+ATOM    359 pS    pS A 359     -76.350 253.320 410.570  1.00  0.00          Cu  
+ATOM    360 pS    pS A 360     -74.670 256.210 412.250  1.00  0.00          Cu  
+ATOM    361 pK    pK A 361     -70.970 254.640 412.040  1.00  0.00          Cu  
+ATOM    362 pS    pS A 362     -69.710 250.840 411.020  1.00  0.00          Cu  
+ATOM    363 pK    pK A 363     -70.490 247.290 409.670  1.00  0.00          Cu  
+ATOM    364 pS    pS A 364     -72.570 248.210 412.360  1.00  0.00          Cu  
+ATOM    365 pK    pK A 365     -75.370 247.920 414.890  1.00  0.00          Cu  
+TER     366       pK A 365
+ENDMDL
+CONECT    1    2
+CONECT    2    1    3
+CONECT    3    2    4
+CONECT    4    3    5
+CONECT    5    4    6
+CONECT    6    5    7
+CONECT    7    6    8
+CONECT    8    7    9
+CONECT    9    8   10
+CONECT   10    9   11
+CONECT   11   10   12
+CONECT   12   11   13
+CONECT   13   12   14
+CONECT   14   13
+END
