@@ -85,21 +85,21 @@ phosA_com, phosB_com, ...                 (phosphate COMs)
 ```
 
 ### `rg`
-Radius of gyration computed over all non-histone-tail beads (`not element Cu`).
+Radius of gyration computed over all non-histone-tail beads.
 
 ```
 Rg
 ```
 
 ### `rmsd`
-RMSD to reference structures. Requires `./ref/{linker-length}/DNA.pdb` and `./ref/{linker-length}/core_all.pdb` relative to the working directory where PLUMED is run.
+RMSD to reference structures. Requires `./ref/<linker-length>/DNA.pdb` and `./ref/<linker-length>/core_all.pdb` relative to the working directory where PLUMED is run.
 
 ```
 RMSD_DNA, RMSD_core_all
 ```
 
 ### `seg_dist`
-Each nucleosome core is divided into `--n-segments-core` segments. All pairwise inter-core segment distances are computed with an `exp(-x)` transformation for smooth encoding (6 core pairs × segments²).
+Each nucleosome core is divided into `--n-segments-core` segments. All pairwise inter-core segment distances are computed with an `exp(-x)` transformation.
 
 ```
 d12_seg0_seg0, ed12_seg0_seg0, ...
@@ -173,5 +173,5 @@ plumed driver --plumed mdp_feature.dat --mf_xtc traj.xtc
 ## Notes
 
 - PLUMED is sensitive to **duplicate label definitions** — this script ensures every `GROUP`/`CENTER` is written exactly once regardless of which features are selected.
-- The `rmsd` feature expects reference PDB files at `./ref/{linker-length}/DNA.pdb` and `./ref/{linker-length}/core_all.pdb` relative to where PLUMED is run, not where this script is run.
+- The `rmsd` feature expects reference PDB files at `./ref/<linker-length>/DNA.pdb` and `./ref/<linker-length>/core_all.pdb` relative to where PLUMED is run, not where this script is run.
 - `exp(-x)` is used for the `seg_dist` exponential encoding.
