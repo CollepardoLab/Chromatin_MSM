@@ -67,8 +67,9 @@ def parse_args():
         help="Reference PDB file path",
     )
     p.add_argument(
-        "--output", default="multi_feature.dat",
-        help="Output PLUMED .dat file (default: multi_feature.dat)",
+        "--output", default="mdp_features.dat",
+        help="Output PLUMED .dat file (default: mdp_features.dat, matching what "
+             "adaptive.py's --feature-file expects)",
     )
     p.add_argument(
         "--features", nargs="+", default=["all"],

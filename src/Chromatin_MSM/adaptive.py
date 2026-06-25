@@ -25,6 +25,7 @@ import argparse
 colvar_prefix      = 'CV'
 n_original_sims    = 320
 feature_file       = 'mdp_features.dat'
+traj_dir           = 'traj_dat'
 # adaptive sampling parameters
 tica_lagtime       = 100
 dim                = None
@@ -41,7 +42,10 @@ save_steps         = 100000   # 100 ps saving interval
 linker_length      = 15
 N_nucleosomes      = 4
 T_val              = 298
-topology_file      = 'ref/15rep.pdb'
+topology_file      = None  # derived from linker_length unless overridden; see default_topology_file()
+
+def default_topology_file(linker_length):
+    return f"ref/{linker_length}/{linker_length}rep.pdb"
 
 def generate_actg_sequence(n):
     pattern = 'ACTG'
@@ -232,7 +236,17 @@ def initialize_cuda():
         return None, None
 
 def run_one_adaptive_simulation(task):
-    (traj_path, frame), round_idx, seed_index, gpu_id = task
+    # run_params is passed explicitly (not read from module globals) because
+    # multiprocessing's 'spawn' context re-imports this module fresh in each
+    # worker, so any values main() set at runtime would otherwise be invisible
+    # here and silently fall back to the module-level defaults.
+    (traj_path, frame), round_idx, seed_index, gpu_id, run_params = task
+    topology_file = run_params["topology_file"]
+    linker_length = run_params["linker_length"]
+    N_nucleosomes = run_params["N_nucleosomes"]
+    sim_steps = run_params["sim_steps"]
+    save_steps = run_params["save_steps"]
+    T_val = run_params["T_val"]
     try:
         platform, properties = initialize_cuda()
         if platform is None:
@@ -269,10 +283,50 @@ def run_adaptive_parallel(tasks, max_concurrent=n_seed_per_round):
     with ctx.Pool(processes=max_concurrent) as pool:
         return pool.map(run_one_adaptive_simulation, tasks)
 
+def preflight_check(traj_dir, topology_file, feature_file, start_round):
+    """Validate required inputs exist before doing any TICA/MSM work.
+
+    Fails loudly with an actionable message instead of running for a while
+    and dying deep inside deeptime (e.g. AssertionError: Data is empty.).
+    """
+    problems = []
+
+    traj_files = glob.glob(os.path.join(traj_dir, "*.xtc"))
+    if not traj_files:
+        problems.append(
+            f"No trajectories found in '{traj_dir}/*.xtc'. The original seed "
+            f"trajectories must be placed there before running."
+        )
+
+    if not os.path.isfile(topology_file):
+        problems.append(
+            f"Topology file '{topology_file}' not found. Either place a PDB "
+            f"there, or pass --topology-file pointing at the right structure "
+            f"for --linker-length."
+        )
+
+    if not os.path.isfile(feature_file):
+        problems.append(
+            f"Feature file '{feature_file}' not found. Generate it first with: "
+            f"nucleosome-feature-writer --pdb {topology_file} "
+            f"--linker-length <N> --output {feature_file}"
+        )
+
+    if problems:
+        print("\nPreflight check failed:\n", file=sys.stderr)
+        for p in problems:
+            print(f"  - {p}", file=sys.stderr)
+        print(
+            "\nSee scripts/setup_adaptive_run.sh for a helper that stages "
+            "the topology symlink and feature file for a run directory.\n",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
 def main():
     global tica_lagtime, dim, var_cutoff, msm_lagtime, n_metastable_sets
     global n_rounds, sim_idx, start_round, n_seed_per_round
-    global linker_length, N_nucleosomes
+    global linker_length, N_nucleosomes, topology_file, feature_file, traj_dir
 
     parser = argparse.ArgumentParser(description="Adaptive sampling pipeline")
     parser.add_argument("--tica-lagtime",      type=int,   default=tica_lagtime)
@@ -286,6 +340,12 @@ def main():
     parser.add_argument("--n-seed-per-round",  type=int,   default=n_seed_per_round)
     parser.add_argument("--linker-length",     type=int,   default=linker_length)
     parser.add_argument("--n-nucleosomes",     type=int,   default=N_nucleosomes)
+    parser.add_argument("--traj-dir",          type=str,   default=traj_dir,
+                         help="Directory containing the original seed trajectories (*.xtc)")
+    parser.add_argument("--topology-file",     type=str,   default=None,
+                         help="Reference topology PDB. Default: ref/<linker-length>/<linker-length>rep.pdb")
+    parser.add_argument("--feature-file",      type=str,   default=feature_file,
+                         help="PLUMED feature definition file (from nucleosome-feature-writer)")
     args = parser.parse_args()
 
     tica_lagtime      = args.tica_lagtime
@@ -299,12 +359,17 @@ def main():
     n_seed_per_round  = args.n_seed_per_round
     linker_length     = args.linker_length
     N_nucleosomes     = args.n_nucleosomes
+    traj_dir          = args.traj_dir
+    feature_file      = args.feature_file
+    topology_file     = args.topology_file or default_topology_file(linker_length)
+
+    preflight_check(traj_dir, topology_file, feature_file, start_round)
 
     # 1) Process original trajectories
     print("Processing original trajectories...")
-    process_trajectories("traj_dat/*.xtc", feature_file, colvar_prefix, start_index=1)
+    process_trajectories(os.path.join(traj_dir, "*.xtc"), feature_file, colvar_prefix, start_index=1)
     # load
-    orig_paths = sorted(glob.glob("traj_dat/*.xtc"))
+    orig_paths = sorted(glob.glob(os.path.join(traj_dir, "*.xtc")))
     orig_trajs = [md.load(p, top=topology_file) for p in orig_paths]
     new_paths = []
 
@@ -355,7 +420,15 @@ def main():
         print(f"[resume] combined_paths: {len(combined_paths)} = "
       f"{len(orig_paths)} + {len(new_paths)}")
         # a) run sims
-        tasks = [((combined_paths[i], f), round_i, k, k % 4)
+        run_params = {
+            "topology_file": topology_file,
+            "linker_length": linker_length,
+            "N_nucleosomes": N_nucleosomes,
+            "sim_steps": sim_steps,
+            "save_steps": save_steps,
+            "T_val": T_val,
+        }
+        tasks = [((combined_paths[i], f), round_i, k, k % 4, run_params)
              for k, (i, f) in enumerate(seed_positions)]
         run_adaptive_parallel(tasks, max_concurrent=n_seed_per_round)
         # b) process new CVs
