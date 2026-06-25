@@ -1,51 +1,36 @@
-# multi_feature_writer.py
+# feature_writer.py
 
-PLUMED collective variable (CV) input generator for tetranucleosomes, built on a coarse-grained (CG) model where bead types are encoded as element labels:
+PLUMED collective variable (CV) input generator for chromatin arrays, built on [OpenCGChromatin](https://github.com/CollepardoLab/OpenCGChromatin) where bead types are encoded as element labels:
 
 | Element | Bead type |
 |---------|-----------|
-| `Au`    | DNA backbone / phosphate beads |
-| `Pt`    | Nucleosome core beads |
-| `Cu`    | Histone tail beads |
-| `P`     | Phosphorus atoms (for coordination contacts) |
+| `Au`    | DNA backbone |
+| `Pt`    | Nucleosome core |
+| `Cu`    | Histone tail |
+| `P`     | Phosphate |
 
-The script reads a reference PDB, extracts atom indices, and writes a `multi_feature.dat` file ready for PLUMED
-
----
-
-## Requirements
-
-- Python 3.7+
-- [MDTraj](https://mdtraj.org/) (`pip install mdtraj`)
-- PLUMED 2.x (to run the generated `.dat` file)
-
----
+The script reads a reference PDB, extracts atom indices, and writes a `mdp_feature.dat` file ready for PLUMED
 
 ## Quick start
 
 ```bash
 # All features, linker length 15
-python multi_feature_writer.py --pdb ref/15rep.pdb --linker-length 15
+python feature_writer.py --pdb ref/15/15rep.pdb --linker-length 15
 
 # Selected features only
-python multi_feature_writer.py --pdb ref/15rep.pdb --linker-length 15 \
+python feature_writer.py --pdb ref/15/15rep.pdb --linker-length 15 \
     --features distance angle torsion
 
-# Custom cutoffs and output name
-python multi_feature_writer.py --pdb ref/15rep.pdb \
-    --features contacts rg \
-    --htail-phos-cf 3.8 --htail-nucle-cf 3.6 \
-    --output contact_rg.dat
 ```
 
 ---
 
-## CLI options
+## Command-Line Options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `--pdb` | path | *(required)* | Reference PDB file |
-| `--output` | path | `multi_feature.dat` | Output PLUMED `.dat` file |
+| `--output` | path | `mdp_feature.dat` | Output PLUMED `.dat` file |
 | `--features` | list | `all` | Feature types to include (see below) |
 | `--linker-length` | int | `15` | Linker DNA length |
 | `--n-segments-core` | int | `15` | Number of segments per nucleosome core |
@@ -107,7 +92,7 @@ Rg
 ```
 
 ### `rmsd`
-RMSD to reference structures. Requires `./ref/DNA.pdb` and `./ref/core_all.pdb` relative to the working directory where PLUMED is run.
+RMSD to reference structures. Requires `./ref/{linker-length}/DNA.pdb` and `./ref/{linker-length}/core_all.pdb` relative to the working directory where PLUMED is run.
 
 ```
 RMSD_DNA, RMSD_core_all
@@ -180,14 +165,7 @@ PRINT ARG=* STRIDE=1 FILE=COLVAR
 ## Running with PLUMED
 
 ```bash
-plumed driver --plumed multi_feature.dat --mf_xtc traj.xtc
-```
-
-Or add `multi_feature.dat` as the PLUMED input in your GROMACS `.mdp`:
-
-```
-plumed-active = yes
-plumed-dat    = multi_feature.dat
+plumed driver --plumed mdp_feature.dat --mf_xtc traj.xtc
 ```
 
 ---
@@ -195,5 +173,5 @@ plumed-dat    = multi_feature.dat
 ## Notes
 
 - PLUMED is sensitive to **duplicate label definitions** — this script ensures every `GROUP`/`CENTER` is written exactly once regardless of which features are selected.
-- The `rmsd` feature expects reference PDB files at `./ref/DNA.pdb` and `./ref/core_all.pdb` relative to where PLUMED is run, not where this script is run.
+- The `rmsd` feature expects reference PDB files at `./ref/{linker-length}/DNA.pdb` and `./ref/{linker-length}/core_all.pdb` relative to where PLUMED is run, not where this script is run.
 - `exp(-x)` is used for the `seg_dist` exponential encoding.
