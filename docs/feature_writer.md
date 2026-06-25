@@ -196,4 +196,4 @@ plumed-dat    = multi_feature.dat
 
 - PLUMED is sensitive to **duplicate label definitions** — this script ensures every `GROUP`/`CENTER` is written exactly once regardless of which features are selected.
 - The `rmsd` feature expects reference PDB files at `./ref/DNA.pdb` and `./ref/core_all.pdb` relative to where PLUMED is run, not where this script is run.
-- `exp(-x)` is used for the `seg_dist` exponential encoding (lepton library syntax).
+- `exp(-x)` is used for the `seg_dist` exponential encoding.

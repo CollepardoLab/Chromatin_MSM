@@ -37,4 +37,4 @@ clustering = estimator.fit(features).fetch_model()
 
 ### 3. Selecting the reference structure
 
-The most populated cluster (largest number of assigned frames) was identified. The frame closest to that cluster's centroid in feature space was selected as the reference structure and saved as `<length>rep.pdb`.
+The most populated cluster (largest number of assigned frames) was identified. The frame closest to that cluster's centroid in feature space was selected as the reference structure and saved as `<linker-length>rep.pdb`.

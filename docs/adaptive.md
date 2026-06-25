@@ -15,10 +15,23 @@ Adaptive sampling of MSMs pipeline for chromatin simulations. Each round uses a 
 ├── new.sh               # SLURM submission script
 ├── mdp_features.dat     # PLUMED input file defining CVs
 ├── ref/
-│   └── 15rep.pdb        # reference topology
+│   └── 15/15rep.pdb     # reference topology (path derived from --linker-length)
 └── traj_dat/
     └── *.xtc            # original trajectories
 ```
+
+All three (`ref/<linker-length>/<linker-length>rep.pdb`, `mdp_features.dat`,
+`traj_dat/`) are read as paths relative to the working directory the CLI is
+launched from — `adaptive.py` does not create or fetch them for you, but it does
+check for them upfront: if any are missing, it prints a list of what's wrong and
+how to fix it and exits, instead of failing deep inside TICA/deeptime later.
+`topology_file` defaults to `ref/<linker-length>/<linker-length>rep.pdb` (override
+with `--topology-file` if your reference structures live elsewhere). `mdp_features.dat`
+must still be generated beforehand with `nucleosome-feature-writer`, whose default
+output filename (`mdp_features.dat`) matches what `adaptive.py` reads by default;
+use `--output`/`--feature-file` on the respective tools if you want a different name.
+Use `scripts/setup_adaptive_run.sh <run_dir> <linker_length>` to stage the topology
+symlink and feature file in one step.
 
 Output directories:
 
@@ -74,6 +87,14 @@ All parameters have sensible defaults and are optional.
 | `--start-round` |  Round to start from (use `> 1` to resume a previous run) |
 | `--n-seed-per-round` | New simulations launched per round |
 | `--sim-idx` | Internal simulation counter offset |
+
+### Input paths
+
+| Parameters | Default | Description |
+|------|---------|-------------|
+| `--traj-dir` | `traj_dat` | Directory containing the original seed trajectories (`*.xtc`) |
+| `--topology-file` | `ref/<linker-length>/<linker-length>rep.pdb` | Reference topology PDB |
+| `--feature-file` | `mdp_features.dat` | PLUMED feature definitions, from `nucleosome-feature-writer` |
 
 ### Example
 
