@@ -73,17 +73,19 @@ Chromatin_MSM/
 │   ├── feature_writer.md        # feature generation docs
 │   └── reference_structures.md  # reference structure generation docs
 ├── scripts/
-│   └── new.sh                   # SLURM submission script
+│   ├── new.sh                   # SLURM submission script
+│   └── setup_adaptive_run.sh    # stage ref/mdp_features.dat/traj_dat for a run dir
 ├── src/Chromatin_MSM/
 │   ├── __init__.py
 │   ├── adaptive.py               # adaptive MSM sampling pipeline
 │   └── feature_writer.py         # PLUMED feature generator
-├── ref/                          # reference structures, by linker length (bp)
+├── ref/                          # reference structures, by linker length (bp) and DNA sequences
 │   ├── 15/15rep.pdb, core1-4.pdb, DNA.pdb, htail*_A-D.pdb, ...
 │   ├── 20/ ... 22/ ... 25/ ... 25_A/ ... 25_AT/ ... 26/ ... 27/ ...
 │   └── 28/ ... 29/ ... 30/ ... 30_A/ ... 30_AT/ ... 58/ ...
-└── MSM_analysis/                 # MSM construction, validation and analysis notebook
+└── MSM_analysis/                 # MSM construction, validation and analysis notebooks
     └── MSM_FMRC.ipynb
 ```
+
 
 
