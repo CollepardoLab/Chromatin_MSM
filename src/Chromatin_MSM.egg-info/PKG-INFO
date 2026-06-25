@@ -12,11 +12,15 @@ Requires-Dist: openmm
 Requires-Dist: plumed
 
 # Chromatin_MSM
+![workflow](image/workflow.png)
 
-Python package combining two tools for tetranucleosome CG simulation analysis:
+Python package combining two tools for chromatin fibres sampling:
 
 - **`Chromatin_MSM.adaptive`** — adaptive MSM sampling pipeline
 - **`Chromatin_MSM.feature_writer`** — PLUMED collective-variable feature generator
+
+The MSM construction, validation and analysis can be found in `MSM_analysis/MSM_FMRC.ipynb`
+
 ## Install
 
 ```bash
