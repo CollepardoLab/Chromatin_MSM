@@ -1,11 +1,6 @@
-# Adaptive Sampling of MSMs for Tetra-nucleosome Arrays
+# Adaptive Sampling of MSMs for Chromatin Arrays
 
 Adaptive sampling of MSMs pipeline for chromatin simulations. Each round uses a Markov State Model (MSM) built from previous trajectories to seed new simulations in under-sampled regions of conformational space.
-
-
-## Requirements
-- python (> 3.9), OpenMM, OpenCGChromatin (https://github.com/CollepardoLab/OpenCGChromatin), DeepTime, MDTraj, PLUMED
-
 
 ## Directory Layout
 
@@ -82,7 +77,7 @@ All parameters have sensible defaults and are optional.
 ### Adaptive sampling control
 
 | Paramters | Description |
-|------|---------|-------------|
+|------|-------------|
 | `--n-rounds` | Total number of adaptive rounds to run |
 | `--start-round` |  Round to start from (use `> 1` to resume a previous run) |
 | `--n-seed-per-round` | New simulations launched per round |
