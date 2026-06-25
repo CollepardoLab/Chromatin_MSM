@@ -1,4 +1,4 @@
-# Chromatin_MSM (TESTING PLS WAIT!)
+# Chromatin_MSM
 ![workflow](image/workflow.png)
 
 Python package combining sampling of chromatin structures and recording features:
@@ -86,6 +86,8 @@ Chromatin_MSM/
 └── MSM_analysis/                 # MSM construction, validation and analysis notebooks
     └── MSM_FMRC.ipynb
 ```
-
+## Citation
+Please cite:
+Chen, Y., Huertas, J., Maristany, M.J., Russell, K., Zhang, M., Farr, S.E., Espinosa, J.R., and Collepardo-Guevara, R. (2026). *A Spectrum of Free Energy Landscape Topologies Encodes Chromatin Polymorphism and Phase Separation*. bioRxiv. https://doi.org/10.64898/2026.06.19.733383
 
 
