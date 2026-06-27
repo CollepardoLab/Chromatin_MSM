@@ -1,6 +1,6 @@
 # Adaptive Sampling of MSMs for Chromatin Arrays
 
-Adaptive sampling of MSMs pipeline for chromatin simulations. Each round uses a Markov State Model (MSM) built from previous trajectories to seed new simulations in under-sampled regions of conformational space.
+Adaptive sampling of MSMs pipeline for chromatin simulations. Each round uses a Markov State Model (MSM) built from previous trajectories to seed new simulations in under-sampled regions of conformational space. The adaptive sampling scheme was built upon [Zhang et al.](https://doi.org/10.1021/acs.jctc.4c00764)
 
 ## Directory Layout
 
