@@ -142,7 +142,7 @@ A `PRINT ARG=* STRIDE=1 FILE=COLVAR` directive is appended at the end.
 ### Example output (distance + torsion)
 
 ```
-MOLINFO STRUCTURE=ref/29rep.pdb
+MOLINFO STRUCTURE=ref/29/29rep.pdb
 
 # Core center virtual atoms
 core1_center: CENTER ATOMS=0,1,2,...
