@@ -41,7 +41,18 @@ nucleosome-feature-writer --pdb ref/15/15rep.pdb --linker-length 15
 
 # Run the adaptive MSM sampling pipeline
 nucleosome-adaptive-sampling --n-rounds 8 --n-seed-per-round 16 --linker-length 15
+
+# PolyA / polyAT linker systems use the ref/<L>_A and ref/<L>_AT references
+nucleosome-feature-writer --pdb ref/25_AT/25rep.pdb --linker-length 25
+nucleosome-adaptive-sampling --linker-length 25 --linker-seq polyAT
 ```
+
+`--linker-seq` selects the linker DNA used to build new seed simulations:
+`ACTG` (default, ACTGACTG...), `polyA` (AAAA...) or `polyAT` (ATAT...). It also
+selects the reference directory: `ref/<L>/`, `ref/<L>_A/` or `ref/<L>_AT/`.
+The feature writer takes the RMSD references (`DNA.pdb`, `core_all.pdb`) from the
+same directory as `--pdb` (override with `--ref-dir`); these paths are resolved
+relative to where PLUMED runs, so run the writer from the run directory.
 ### Before running `nucleosome-adaptive-sampling`
 
 `adaptive.py` reads several inputs as **paths relative to the current working
@@ -50,8 +61,9 @@ the run directory must contain:
 
 | Path | Required content |
 |------|-------------------|
-| `./traj_dat/*.xtc` | Original seed trajectories (see `--n-original-sims` in the code / `n_original_sims`) |
-| `./ref/<linker-length>/<linker-length>rep.pdb` | Reference topology. Default derived from `--linker-length` (e.g. `--linker-length 15` -> `ref/15/15rep.pdb`); override with `--topology-file` if your structure lives elsewhere |
+| `./traj_dat/*.xtc` | Original seed trajectories (320 by default, see `--n-original-sims` in the code / `n_original_sims`) |
+| `./ref/<linker-length>[_A\|_AT]/<linker-length>rep.pdb` | Reference topology. Default derived from `--linker-length` and `--linker-seq` (e.g. `--linker-length 15` -> `ref/15/15rep.pdb`, `--linker-length 25 --linker-seq polyAT` -> `ref/25_AT/25rep.pdb`); override with `--topology-file` if your structure lives elsewhere |
+| `./ref/<linker-length>[_A\|_AT]/DNA.pdb`, `core_all.pdb` | RMSD references read by PLUMED for the `rmsd` feature |
 | `./mdp_features.dat` | PLUMED CV definitions, generated with `nucleosome-feature-writer` (defaults to `mdp_features.dat`, matching what `adaptive.py` expects; override with `--output` on the writer and `--feature-file` on `adaptive.py` if you want a different name/path) |
 
 See `scripts/new.sh` for an example SLURM submission script for the adaptive-sampling
@@ -82,7 +94,7 @@ Chromatin_MSM/
 ├── ref/                          # reference structures, by linker length (bp) and DNA seqs
 │   ├── 15/15rep.pdb, core1-4.pdb, DNA.pdb, htail*_A-D.pdb, ...
 │   ├── 20/ ... 22/ ... 25/ ... 25_A/ ... 25_AT/ ... 26/ ... 27/ ...
-│   └── 28/ ... 29/ ... 30/ ... 30_A/ ... 30_AT/ ... 58/ ...
+│   └── 28/ ... 29/ ... 30/ ... 30_A/ ... 30_AT/ ... 58/ ...  (_A = polyA, _AT = polyAT linkers)
 └── MSM_analysis/                 # MSM construction, validation and analysis notebooks
     └── MSM_FMRC.ipynb
 ```
