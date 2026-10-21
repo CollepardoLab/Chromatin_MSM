@@ -1,6 +1,11 @@
-# Adaptive Sampling of MSMs for Chromatin Arrays
+# Adaptive Sampling of MSMs for Tetra-nucleosome Arrays
 
 Adaptive sampling of MSMs pipeline for chromatin simulations. Each round uses a Markov State Model (MSM) built from previous trajectories to seed new simulations in under-sampled regions of conformational space. The adaptive sampling scheme was built upon [Zhang et al.](https://doi.org/10.1021/acs.jctc.4c00764)
+
+
+## Requirements
+- python (> 3.9), OpenMM, OpenCGChromatin (https://github.com/CollepardoLab/OpenCGChromatin), DeepTime, MDTraj, PLUMED
+
 
 ## Directory Layout
 
@@ -10,22 +15,24 @@ Adaptive sampling of MSMs pipeline for chromatin simulations. Each round uses a 
 ├── new.sh               # SLURM submission script
 ├── mdp_features.dat     # PLUMED input file defining CVs
 ├── ref/
-│   └── 15/15rep.pdb     # reference topology (path derived from --linker-length)
+│   └── 15/15rep.pdb     # reference topology (path derived from --linker-length/--linker-seq)
 └── traj_dat/
     └── *.xtc            # original trajectories
 ```
 
-All three (`ref/<linker-length>/<linker-length>rep.pdb`, `mdp_features.dat`,
+All three (`ref/<linker-length>[_A|_AT]/<linker-length>rep.pdb`, `mdp_features.dat`,
 `traj_dat/`) are read as paths relative to the working directory the CLI is
 launched from — `adaptive.py` does not create or fetch them for you, but it does
 check for them upfront: if any are missing, it prints a list of what's wrong and
 how to fix it and exits, instead of failing deep inside TICA/deeptime later.
-`topology_file` defaults to `ref/<linker-length>/<linker-length>rep.pdb` (override
-with `--topology-file` if your reference structures live elsewhere). `mdp_features.dat`
+`topology_file` defaults to `ref/<linker-length>/<linker-length>rep.pdb` for ACTG
+linkers, `ref/<linker-length>_A/...` for `--linker-seq polyA` and
+`ref/<linker-length>_AT/...` for `--linker-seq polyAT` (override with
+`--topology-file` if your reference structures live elsewhere). `mdp_features.dat`
 must still be generated beforehand with `nucleosome-feature-writer`, whose default
 output filename (`mdp_features.dat`) matches what `adaptive.py` reads by default;
 use `--output`/`--feature-file` on the respective tools if you want a different name.
-Use `scripts/setup_adaptive_run.sh <run_dir> <linker_length>` to stage the topology
+Use `scripts/setup_adaptive_run.sh <run_dir> <linker_length> [ACTG|polyA|polyAT]` to stage the topology
 symlink and feature file in one step.
 
 Output directories:
@@ -74,10 +81,18 @@ All parameters have sensible defaults and are optional.
 | `--msm-lagtime` | `250` | MSM lag time |
 | `--n-metastable-sets` | `20` | Number of macrostates for PCCA+ |
 
+### System parameters
+
+| Parameters | Default | Description |
+|------|---------|-------------|
+| `--linker-length` | `15` | Linker DNA length (bp) |
+| `--linker-seq` | `ACTG` | Linker DNA sequence: `ACTG` (ACTGACTG...), `polyA` (AAAA...) or `polyAT` (ATAT...). Used to build the DNA sequence of new seed simulations and to pick `ref/<linker-length>[_A\|_AT]/` |
+| `--n-nucleosomes` | `4` | Number of nucleosomes |
+
 ### Adaptive sampling control
 
 | Paramters | Description |
-|------|-------------|
+|------|---------|-------------|
 | `--n-rounds` | Total number of adaptive rounds to run |
 | `--start-round` |  Round to start from (use `> 1` to resume a previous run) |
 | `--n-seed-per-round` | New simulations launched per round |
@@ -88,7 +103,7 @@ All parameters have sensible defaults and are optional.
 | Parameters | Default | Description |
 |------|---------|-------------|
 | `--traj-dir` | `traj_dat` | Directory containing the original seed trajectories (`*.xtc`) |
-| `--topology-file` | `ref/<linker-length>/<linker-length>rep.pdb` | Reference topology PDB |
+| `--topology-file` | `ref/<linker-length>[_A\|_AT]/<linker-length>rep.pdb` | Reference topology PDB |
 | `--feature-file` | `mdp_features.dat` | PLUMED feature definitions, from `nucleosome-feature-writer` |
 
 ### Example
@@ -103,6 +118,12 @@ python adaptive.py \
   --n-seed-per-round 16 \
   --linker-length 15 \
   --n-nucleosomes 4
+```
+
+PolyA / polyAT linkers (e.g. the 25 bp polyAT system, reference in `ref/25_AT/`):
+
+```bash
+python adaptive.py --linker-length 25 --linker-seq polyAT
 ```
 
 ### Resuming a run
