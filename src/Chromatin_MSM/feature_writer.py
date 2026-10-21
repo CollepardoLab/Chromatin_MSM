@@ -10,30 +10,31 @@ Feature types (--features):
   contacts   Histone-tail / DNA-phosphate / core coordination numbers
              plus per-tail and per-nucleosome phosphate COMs
   rg         Radius of gyration (non-histone-tail atoms)
-  rmsd       RMSD to reference structures (DNA and core_all)
+  rmsd       RMSD to reference structures (DNA and core_all, from --ref-dir)
   seg_dist   Pairwise core-segment distances with exp(-x) transformations
 
 Usage examples
 --------------
   # All features, linker length 15
-  python multi_feature_writer.py --pdb ref/15rep.pdb --linker-length 15
+  python multi_feature_writer.py --pdb ref/15/15rep.pdb --linker-length 15
 
   # Only distances and angles
-  python multi_feature_writer.py --pdb ref/15rep.pdb \\
+  python multi_feature_writer.py --pdb ref/15/15rep.pdb \\
       --features distance angle torsion
 
   # Contacts only, with custom cutoffs
-  python multi_feature_writer.py --pdb ref/15rep.pdb \\
+  python multi_feature_writer.py --pdb ref/15/15rep.pdb \\
       --linker-length 15 --features contacts rg \\
       --htail-phos-cf 3.8 --htail-nucle-cf 3.6
 
   # Custom tail ranges from JSON file
-  python multi_feature_writer.py --pdb ref/15rep.pdb \\
+  python multi_feature_writer.py --pdb ref/15/15rep.pdb \\
       --tail-ranges tail_ranges.json --output multi_feature.dat
 """
 
 import argparse
 import json
+import os
 import sys
 import mdtraj as md
 from itertools import combinations
@@ -79,6 +80,12 @@ def parse_args():
             "Feature types to include (space-separated). "
             f"Choices: all {ALL_FEATURES}. Default: all."
         ),
+    )
+    p.add_argument(
+        "--ref-dir", default=None,
+        help="Directory holding the RMSD references DNA.pdb and core_all.pdb, "
+             "as PLUMED will see it from its working directory "
+             "(default: the directory containing --pdb, e.g. ref/25_A)",
     )
     p.add_argument(
         "--linker-length", type=int,
@@ -142,7 +149,11 @@ def write_features(
     segment_stride,
     htail_phos_cf,
     htail_nucle_cf,
+    ref_dir=None,
 ):
+    # RMSD references live alongside the reference topology (ref/<L>[_A|_AT]/).
+    if ref_dir is None:
+        ref_dir = os.path.dirname(pdb_file) or "."
     traj = md.load(pdb_file)
     top = traj.topology
     chain_labels = ['A', 'B', 'C', 'D']
@@ -383,8 +394,8 @@ def write_features(
         if "rmsd" in features:
             f.write("# ---- RMSD to reference structures ----\n")
             if DNA_indices:
-                f.write("RMSD_DNA: RMSD REFERENCE=./ref/DNA.pdb TYPE=OPTIMAL\n")
-            f.write("RMSD_core_all: RMSD REFERENCE=./ref/core_all.pdb TYPE=OPTIMAL\n")
+                f.write(f"RMSD_DNA: RMSD REFERENCE={os.path.join(ref_dir, 'DNA.pdb')} TYPE=OPTIMAL\n")
+            f.write(f"RMSD_core_all: RMSD REFERENCE={os.path.join(ref_dir, 'core_all.pdb')} TYPE=OPTIMAL\n")
             f.write("\n")
 
         # ------------------------------------------------------------------
@@ -438,6 +449,7 @@ def main():
         segment_stride=args.segment_stride,
         htail_phos_cf=args.htail_phos_cf,
         htail_nucle_cf=args.htail_nucle_cf,
+        ref_dir=args.ref_dir,
     )
     print(f"Written : {args.output}")
     print(f"Features: {', '.join(sorted(features))}")

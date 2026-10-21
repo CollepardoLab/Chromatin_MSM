@@ -40,26 +40,39 @@ n_seed_per_round   = 20
 sim_steps          = 50000000 # 500 ns simulation length
 save_steps         = 100000   # 100 ps saving interval
 linker_length      = 15
+linker_seq         = 'ACTG'  # linker DNA sequence type; see LINKER_PATTERNS
 N_nucleosomes      = 4
 T_val              = 298
-topology_file      = None  # derived from linker_length unless overridden; see default_topology_file()
+topology_file      = None  # derived from linker_length/linker_seq unless overridden; see default_topology_file()
 
-def default_topology_file(linker_length):
-    return f"ref/{linker_length}/{linker_length}rep.pdb"
+# Linker DNA sequence types: repeating pattern used to fill each linker, and the
+# suffix of the matching reference directory under ref/ (e.g. ref/25_A/).
+LINKER_PATTERNS = {'ACTG': 'ACTG', 'polyA': 'A', 'polyAT': 'AT'}
+LINKER_REF_SUFFIX = {'ACTG': '', 'polyA': '_A', 'polyAT': '_AT'}
 
-def generate_actg_sequence(n):
-    pattern = 'ACTG'
+def default_ref_dir(linker_length, linker_seq='ACTG'):
+    return f"ref/{linker_length}{LINKER_REF_SUFFIX[linker_seq]}"
+
+def default_topology_file(linker_length, linker_seq='ACTG'):
+    return f"{default_ref_dir(linker_length, linker_seq)}/{linker_length}rep.pdb"
+
+def generate_linker_sequence(n, pattern='ACTG'):
+    # Repeat `pattern` and truncate to n bp, e.g. 'ACTG' -> ACTGACTG..., 'A' -> AAAA..., 'AT' -> ATAT...
     return (pattern * (n // len(pattern) + 1))[:n]
 
-def generate_even_dyads_sequence(N_nucleosomes, linker_length):
+def generate_actg_sequence(n):
+    return generate_linker_sequence(n, 'ACTG')
+
+def generate_even_dyads_sequence(N_nucleosomes, linker_length, linker_seq='ACTG'):
     # This is the W601 DNA sequence from literature
     w601 = ('ATCGAGAATCCCGGTGCCGAGGCCGCTCAATTGGTCGTAGACAGCTCTAGCACCGCTTAAACGCACGTACGCGCT'
             'GTCCCCCGCGTTTTAACCGCCAAGGGGATTACTCCCTAGTCTCCAGGCACGTGTCAGATATATACATCCGAT')
-    # Start with a short ACTG sequence for the half-linker on the left end.
-    DNA_sequence = generate_actg_sequence(linker_length // 2)
+    pattern = LINKER_PATTERNS[linker_seq]
+    # Start with a short linker sequence for the half-linker on the left end.
+    DNA_sequence = generate_linker_sequence(linker_length // 2, pattern)
     for _ in range(N_nucleosomes - 1):
-        DNA_sequence += w601 + generate_actg_sequence(linker_length)
-    DNA_sequence += w601 + generate_actg_sequence(linker_length // 2)
+        DNA_sequence += w601 + generate_linker_sequence(linker_length, pattern)
+    DNA_sequence += w601 + generate_linker_sequence(linker_length // 2, pattern)
     return DNA_sequence
 
 def process_trajectories(traj_glob, feature_file, out_dir, start_index=1):
@@ -243,6 +256,7 @@ def run_one_adaptive_simulation(task):
     (traj_path, frame), round_idx, seed_index, gpu_id, run_params = task
     topology_file = run_params["topology_file"]
     linker_length = run_params["linker_length"]
+    linker_seq = run_params["linker_seq"]
     N_nucleosomes = run_params["N_nucleosomes"]
     sim_steps = run_params["sim_steps"]
     save_steps = run_params["save_steps"]
@@ -259,7 +273,7 @@ def run_one_adaptive_simulation(task):
         traj[frame].save_pdb(os.path.join(seed_dir, "seed_frame.pdb"))
         pdb = app.PDBFile(os.path.join(seed_dir, "seed_frame.pdb"))
         positions = pdb.getPositions(asNumpy=True).value_in_unit(unit.nanometer)
-        DNA_sequence = generate_even_dyads_sequence(N_nucleosomes, linker_length)
+        DNA_sequence = generate_even_dyads_sequence(N_nucleosomes, linker_length, linker_seq)
         nucleosome_sequence = N_nucleosomes * ['1kx5']
         first_dyad = linker_length//2 + 73
         dyad_positions = [first_dyad + i*(147+linker_length) for i in range(N_nucleosomes)]
@@ -302,7 +316,7 @@ def preflight_check(traj_dir, topology_file, feature_file, start_round):
         problems.append(
             f"Topology file '{topology_file}' not found. Either place a PDB "
             f"there, or pass --topology-file pointing at the right structure "
-            f"for --linker-length."
+            f"for --linker-length/--linker-seq."
         )
 
     if not os.path.isfile(feature_file):
@@ -326,7 +340,7 @@ def preflight_check(traj_dir, topology_file, feature_file, start_round):
 def main():
     global tica_lagtime, dim, var_cutoff, msm_lagtime, n_metastable_sets
     global n_rounds, sim_idx, start_round, n_seed_per_round
-    global linker_length, N_nucleosomes, topology_file, feature_file, traj_dir
+    global linker_length, linker_seq, N_nucleosomes, topology_file, feature_file, traj_dir
 
     parser = argparse.ArgumentParser(description="Adaptive sampling pipeline")
     parser.add_argument("--tica-lagtime",      type=int,   default=tica_lagtime)
@@ -339,11 +353,15 @@ def main():
     parser.add_argument("--start-round",       type=int,   default=start_round)
     parser.add_argument("--n-seed-per-round",  type=int,   default=n_seed_per_round)
     parser.add_argument("--linker-length",     type=int,   default=linker_length)
+    parser.add_argument("--linker-seq",        type=str,   default=linker_seq,
+                         choices=sorted(LINKER_PATTERNS),
+                         help="Linker DNA sequence: ACTG (ACTGACTG...), polyA (AAAA...) or polyAT (ATAT...). "
+                              "Also selects the reference directory ref/<linker-length>[_A|_AT]/")
     parser.add_argument("--n-nucleosomes",     type=int,   default=N_nucleosomes)
     parser.add_argument("--traj-dir",          type=str,   default=traj_dir,
                          help="Directory containing the original seed trajectories (*.xtc)")
     parser.add_argument("--topology-file",     type=str,   default=None,
-                         help="Reference topology PDB. Default: ref/<linker-length>/<linker-length>rep.pdb")
+                         help="Reference topology PDB. Default: ref/<linker-length>[_A|_AT]/<linker-length>rep.pdb")
     parser.add_argument("--feature-file",      type=str,   default=feature_file,
                          help="PLUMED feature definition file (from nucleosome-feature-writer)")
     args = parser.parse_args()
@@ -358,10 +376,11 @@ def main():
     start_round       = args.start_round
     n_seed_per_round  = args.n_seed_per_round
     linker_length     = args.linker_length
+    linker_seq        = args.linker_seq
     N_nucleosomes     = args.n_nucleosomes
     traj_dir          = args.traj_dir
     feature_file      = args.feature_file
-    topology_file     = args.topology_file or default_topology_file(linker_length)
+    topology_file     = args.topology_file or default_topology_file(linker_length, linker_seq)
 
     preflight_check(traj_dir, topology_file, feature_file, start_round)
 
@@ -423,6 +442,7 @@ def main():
         run_params = {
             "topology_file": topology_file,
             "linker_length": linker_length,
+            "linker_seq": linker_seq,
             "N_nucleosomes": N_nucleosomes,
             "sim_steps": sim_steps,
             "save_steps": save_steps,
