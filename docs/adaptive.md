@@ -4,7 +4,7 @@ Adaptive sampling of MSMs pipeline for chromatin simulations. Each round uses a 
 
 
 ## Requirements
-- python (> 3.9), OpenMM, OpenCGChromatin (https://github.com/CollepardoLab/OpenCGChromatin), DeepTime, MDTraj, PLUMED
+- python (> 3.9), OpenMM, [OpenCGChromatin](https://github.com/CollepardoLab/OpenCGChromatin), DeepTime, MDTraj, PLUMED
 
 
 ## Directory Layout
@@ -24,7 +24,7 @@ All three (`ref/<linker-length>[_A|_AT]/<linker-length>rep.pdb`, `mdp_features.d
 `traj_dat/`) are read as paths relative to the working directory the CLI is
 launched from — `adaptive.py` does not create or fetch them for you, but it does
 check for them upfront: if any are missing, it prints a list of what's wrong and
-how to fix it and exits, instead of failing deep inside TICA/deeptime later.
+how to fix it and exits.
 `topology_file` defaults to `ref/<linker-length>/<linker-length>rep.pdb` for ACTG
 linkers, `ref/<linker-length>_A/...` for `--linker-seq polyA` and
 `ref/<linker-length>_AT/...` for `--linker-seq polyAT` (override with
@@ -92,7 +92,7 @@ All parameters have sensible defaults and are optional.
 ### Adaptive sampling control
 
 | Paramters | Description |
-|------|---------|-------------|
+|------|---------|
 | `--n-rounds` | Total number of adaptive rounds to run |
 | `--start-round` |  Round to start from (use `> 1` to resume a previous run) |
 | `--n-seed-per-round` | New simulations launched per round |
