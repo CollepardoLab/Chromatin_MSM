@@ -8,7 +8,7 @@ Each subdirectory contains a reference structure for a tetra-nucleosome system a
 
 Each tetra-nucleosome conformation was encoded using **distance-symmetrized features** computed from the six pairwise inter-nucleosome distances (d12, d13, d14, d23, d24, d34) between the four nucleosome core particles.
 
-The symmetrization respects the two-fold pseudo-symmetry of the tetra-nucleosome, collapsing the six raw distances into six symmetric features. The method follows the approach of Ding and Zhang [ref](https://www.nature.com/articles/s41467-021-21377-z):
+The symmetrization respects the two-fold pseudo-symmetry of the tetra-nucleosome, collapsing the six raw distances into six symmetric features. The method follows the approach of [Ding and Zhang](https://www.nature.com/articles/s41467-021-21377-z):
 
 ```python
 def calculate_symmetrized_features(dists):
