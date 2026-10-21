@@ -67,7 +67,8 @@ the run directory must contain:
 | `./mdp_features.dat` | PLUMED CV definitions, generated with `nucleosome-feature-writer` (defaults to `mdp_features.dat`, matching what `adaptive.py` expects; override with `--output` on the writer and `--feature-file` on `adaptive.py` if you want a different name/path) |
 
 See `scripts/new.sh` for an example SLURM submission script for the adaptive-sampling
-pipeline, implementing CUDA Multi-Process Service (MPS) on a GPU cluster.
+pipeline on a GPU cluster, which uses CUDA Multi-Process Service (MPS) to share each GPU
+between several simulations, following [OPIG blog post](https://www.blopig.com/blog/2024/11/big-compute-doesnt-want-you-to-know-this-maximising-gpu-usage-with-cuda-mps/).
 
 ## Detailed docs
 
