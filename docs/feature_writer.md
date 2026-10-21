@@ -1,37 +1,53 @@
-# feature_writer.py
+# multi_feature_writer.py
 
-PLUMED collective variable (CV) input generator for chromatin arrays, built on [OpenCGChromatin](https://github.com/CollepardoLab/OpenCGChromatin) where bead types are encoded as element labels:
+PLUMED collective variable (CV) input generator for tetranucleosomes, built on a coarse-grained (CG) model where bead types are encoded as element labels:
 
 | Element | Bead type |
 |---------|-----------|
-| `Au`    | DNA backbone |
-| `Pt`    | Nucleosome core |
-| `Cu`    | Histone tail |
-| `P`     | Phosphate |
+| `Au`    | DNA backbone / phosphate beads |
+| `Pt`    | Nucleosome core beads |
+| `Cu`    | Histone tail beads |
+| `P`     | Phosphorus atoms (for coordination contacts) |
 
-The script reads a reference PDB, extracts atom indices, and writes a `mdp_feature.dat` file ready for PLUMED
+The script reads a reference PDB, extracts atom indices, and writes a `multi_feature.dat` file ready for PLUMED
+
+---
+
+## Requirements
+
+- Python 3.7+
+- [MDTraj](https://mdtraj.org/) (`pip install mdtraj`)
+- PLUMED 2.x (to run the generated `.dat` file)
+
+---
 
 ## Quick start
 
 ```bash
 # All features, linker length 15
-python feature_writer.py --pdb ref/15/15rep.pdb --linker-length 15
+python multi_feature_writer.py --pdb ref/15/15rep.pdb --linker-length 15
 
 # Selected features only
-python feature_writer.py --pdb ref/15/15rep.pdb --linker-length 15 \
+python multi_feature_writer.py --pdb ref/15/15rep.pdb --linker-length 15 \
     --features distance angle torsion
 
+# Custom cutoffs and output name
+python multi_feature_writer.py --pdb ref/15/15rep.pdb \
+    --features contacts rg \
+    --htail-phos-cf 3.8 --htail-nucle-cf 3.6 \
+    --output contact_rg.dat
 ```
 
 ---
 
-## Command-Line Options
+## CLI options
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `--pdb` | path | *(required)* | Reference PDB file |
-| `--output` | path | `mdp_feature.dat` | Output PLUMED `.dat` file |
+| `--output` | path | `multi_feature.dat` | Output PLUMED `.dat` file |
 | `--features` | list | `all` | Feature types to include (see below) |
+| `--ref-dir` | path | directory of `--pdb` | Directory containing `DNA.pdb` and `core_all.pdb` for the `rmsd` feature, as seen from where PLUMED runs |
 | `--linker-length` | int | `15` | Linker DNA length |
 | `--n-segments-core` | int | `15` | Number of segments per nucleosome core |
 | `--segment-stride` | int | `5` | Atom stride within each core-segment `CENTER` |
@@ -85,21 +101,21 @@ phosA_com, phosB_com, ...                 (phosphate COMs)
 ```
 
 ### `rg`
-Radius of gyration computed over all non-histone-tail beads.
+Radius of gyration computed over all non-histone-tail beads (`not element Cu`).
 
 ```
 Rg
 ```
 
 ### `rmsd`
-RMSD to reference structures. Requires `./ref/<linker-length>/DNA.pdb` and `./ref/<linker-length>/core_all.pdb` relative to the working directory where PLUMED is run.
+RMSD to reference structures. Reads `DNA.pdb` and `core_all.pdb` from the per-linker reference directory `ref/<linker-length>[_A|_AT]/` — by default the directory containing `--pdb` (e.g. `--pdb ref/25_AT/25rep.pdb` writes `REFERENCE=ref/25_AT/DNA.pdb`), or `--ref-dir` if given. Relative paths are resolved from the working directory where PLUMED is run.
 
 ```
 RMSD_DNA, RMSD_core_all
 ```
 
 ### `seg_dist`
-Each nucleosome core is divided into `--n-segments-core` segments. All pairwise inter-core segment distances are computed with an `exp(-x)` transformation.
+Each nucleosome core is divided into `--n-segments-core` segments. All pairwise inter-core segment distances are computed with an `exp(-x)` transformation for smooth encoding (6 core pairs × segments²).
 
 ```
 d12_seg0_seg0, ed12_seg0_seg0, ...
@@ -112,7 +128,7 @@ d12_seg0_seg0, ed12_seg0_seg0, ...
 By default the script uses built-in ranges for a standard 4-nucleosome system. To use a different system, supply a JSON file:
 
 ```bash
-python multi_feature_writer.py --pdb ref/rep.pdb --tail-ranges tail_ranges.json
+python multi_feature_writer.py --pdb ref/15/15rep.pdb --tail-ranges tail_ranges.json
 ```
 
 **JSON format** — keys are histone chain labels (`A`–`D`), values are lists of `[start, end]` residue index pairs:
@@ -165,7 +181,14 @@ PRINT ARG=* STRIDE=1 FILE=COLVAR
 ## Running with PLUMED
 
 ```bash
-plumed driver --plumed mdp_feature.dat --mf_xtc traj.xtc
+plumed driver --plumed multi_feature.dat --mf_xtc traj.xtc
+```
+
+Or add `multi_feature.dat` as the PLUMED input in your GROMACS `.mdp`:
+
+```
+plumed-active = yes
+plumed-dat    = multi_feature.dat
 ```
 
 ---
@@ -173,5 +196,5 @@ plumed driver --plumed mdp_feature.dat --mf_xtc traj.xtc
 ## Notes
 
 - PLUMED is sensitive to **duplicate label definitions** — this script ensures every `GROUP`/`CENTER` is written exactly once regardless of which features are selected.
-- The `rmsd` feature expects reference PDB files at `./ref/<linker-length>/DNA.pdb` and `./ref/<linker-length>/core_all.pdb` relative to where PLUMED is run, not where this script is run.
+- The `rmsd` feature writes reference paths `<ref-dir>/DNA.pdb` and `<ref-dir>/core_all.pdb` (default `<ref-dir>` = directory of `--pdb`, e.g. `ref/15`). Relative paths are resolved from where PLUMED is run, not where this script is run, so run the writer from the same directory as PLUMED or pass `--ref-dir`.
 - `exp(-x)` is used for the `seg_dist` exponential encoding.

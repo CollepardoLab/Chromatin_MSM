@@ -1,6 +1,6 @@
 # Reference Structures
 
-Each subdirectory contains a reference structure for a tetra-nucleosome system at a given linker DNA length (in bp, e.g. `25`, `30`). Suffixes `_A` and `_AT` denote variant DNA sequences. 
+Each subdirectory contains a reference structure for a tetra-nucleosome system at a given linker DNA length (in bp, e.g. `25`, `30`). Suffixes `_A` and `_AT` denote variant linker DNA sequences: no suffix = ACTG linkers (`--linker-seq ACTG`), `_A` = polyA linkers (`--linker-seq polyA`), `_AT` = polyAT linkers (`--linker-seq polyAT`). Each directory holds `<linker-length>rep.pdb` plus the RMSD references `DNA.pdb` and `core_all.pdb` used by the feature writer.
 
 ## How reference structures were generated
 
@@ -8,7 +8,7 @@ Each subdirectory contains a reference structure for a tetra-nucleosome system a
 
 Each tetra-nucleosome conformation was encoded using **distance-symmetrized features** computed from the six pairwise inter-nucleosome distances (d12, d13, d14, d23, d24, d34) between the four nucleosome core particles.
 
-The symmetrization respects the two-fold pseudo-symmetry of the tetra-nucleosome, collapsing the six raw distances into six symmetric features. The method follows the approach of [Ding and Zhang](https://www.nature.com/articles/s41467-021-21377-z):
+The symmetrization respects the two-fold pseudo-symmetry of the tetra-nucleosome, collapsing the six raw distances into six symmetric features. The method follows the approach of Ding and Zhang [ref](https://www.nature.com/articles/s41467-021-21377-z):
 
 ```python
 def calculate_symmetrized_features(dists):
